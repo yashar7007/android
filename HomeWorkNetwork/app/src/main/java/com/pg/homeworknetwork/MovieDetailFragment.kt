@@ -10,6 +10,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 class MovieDetailFragment : Fragment(R.layout.fragment_movie_preview) {
     lateinit var poster: ImageView
@@ -28,16 +32,24 @@ class MovieDetailFragment : Fragment(R.layout.fragment_movie_preview) {
             releaseDate = findViewById(R.id.releaseDate)
         }
 
-        val movieId = arguments?.getInt(ARG_ID) ?: 550
-        val movie = //получаем фильм
-        poster.load("${BuildConfig.API_IMAGE_BASE_URL}${movie.posterPath}") {
-            transformations(RoundedCornersTransformation(16f))
-        }
-        originalTitle.text = movie.originalTitle
-        overview.text = movie.overview
-        popularity.text = movie.popularity.toString()
-        releaseDate.text = movie.releaseDate
+        val movieId = arguments?.getString(ARG_ID) ?: 550
+        val context : CoroutineContext = SupervisorJob() + Dispatchers.IO
+        val scope= CoroutineScope(context)
 
+
+        scope.launch {
+            val movie = Api().getMovieById(movieId.toString())
+            withContext(Dispatchers.Main) {
+                poster.load(movie.image) {
+                    transformations(RoundedCornersTransformation(16f))
+                }
+
+                originalTitle.text = movie.fullTitle
+                overview.text = movie.genres.toString()
+                popularity.text = movie.imDbRating.toString()
+                releaseDate.text = movie.year
+            }
+        }
         activity?.onBackPressedDispatcher?.addCallback(this.viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val manager: FragmentManager = parentFragmentManager
@@ -49,7 +61,6 @@ class MovieDetailFragment : Fragment(R.layout.fragment_movie_preview) {
     }
 
     companion object {
-        const val TAG = "MovieDetailFragment"
         const val ARG_ID = "MovieDetailFragment_Arguments_Movie_Id"
     }
 }

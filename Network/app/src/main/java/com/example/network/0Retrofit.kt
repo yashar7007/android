@@ -16,11 +16,11 @@ fun main() {
 
     val api: RetrofitApi = retrofit.create(RetrofitApi::class.java)
 
-    val response: Call<ResponseBody> = api.getMovie()
+ //   val response: Call<ResponseBody> = api.getMovie(550)
 //    val response: Call<ResponseBody> = api.getMovie(version = 3)
 //    val response: Call<ResponseBody> = api.getMovie(version = 3, id = 550)
 //    val response: Call<ResponseBody> = api.getMovie(version = 3, id = 550, key = BuildConfig.API_KEY)
-//    val response: Call<ResponseBody> = api.searchMovie("spider")
+    val response: Call<ResponseBody> = api.searchMovie("spider")
 
     response.enqueue(object : Callback<ResponseBody> {
         override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -34,15 +34,16 @@ fun main() {
         }
     })
 }
+const val API_KEY= "d33a5213f2b97a4a90d910d493bbb1d1"
 
 interface RetrofitApi {
-    @GET("3/movie/550?api_key=${BuildConfig.API_KEY}")
+    @GET("3/movie/550?api_key=${API_KEY}")
     fun getMovie(): Call<ResponseBody>
 
-    @GET("3/movie/{id}?api_key=${BuildConfig.API_KEY}")
+    @GET("3/movie/{id}?api_key=${API_KEY}")
     fun getMovie(@Path("id") id: Int): Call<ResponseBody>
 
-    @GET("{version}/movie/{id}?api_key=${BuildConfig.API_KEY}")
+    @GET("{version}/movie/{id}?api_key=${API_KEY}")
     fun getMovie(@Path("version") version: Int, @Path("id") id: Int): Call<ResponseBody>
 
     @GET("{version}/movie/{id}")
@@ -52,6 +53,6 @@ interface RetrofitApi {
         @Query("api_key") key: String
     ): Call<ResponseBody>
 
-    @GET("{version}/search/movie?api_key=${BuildConfig.API_KEY}&page=1&include_adult=false")
+    @GET("{version}/search/movie?api_key=${API_KEY}&page=1&include_adult=false")
     fun searchMovie(@Query("query") searchString: String): Call<ResponseBody>
 }

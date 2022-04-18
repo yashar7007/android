@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             NetworkTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    Text("Hello World!")
+
                 }
             }
         }

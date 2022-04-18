@@ -36,6 +36,7 @@ internal class MovieItemAdapter : ListAdapter<Movie, MovieItemAdapter.ViewHolder
             AnimationUtils.loadAnimation(holder.itemView.context, R.anim.recycler_anim)
     }
 
+
     interface IOnItemClick {
         fun onItemClick(movie: Movie)
     }
@@ -52,7 +53,7 @@ internal class MovieItemAdapter : ListAdapter<Movie, MovieItemAdapter.ViewHolder
             image.requestLayout()
             itemTitle.text = movie.title
 
-            image.load("${BuildConfig.API_IMAGE_BASE_URL}${movie.posterPath}") {
+            image.load(movie.image) {
                 transformations(RoundedCornersTransformation(16f))
             }
         }
